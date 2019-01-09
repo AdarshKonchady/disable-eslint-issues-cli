@@ -12,7 +12,7 @@ You might have an existing project which has a lot of errors or/and warnings but
 npx disable-eslint-issues-cli <directory_path>
 ```
 
-Example:
+### Example:
 
 ```
 npx disable-eslint-issues-cli src/**/*.js
