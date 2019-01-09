@@ -1,6 +1,4 @@
-#
-
-disable-eslint-issues-cli
+# disable-eslint-issues-cli
 
 This package can be used to disable all existing errors and warnings in your project by adding a comment to disable them.
 
@@ -14,7 +12,7 @@ You might have an existing project which has a lot of errors or/and warnings but
 npx disable-eslint-issues-cli <directory_path>
 ```
 
-Example:
+### Example:
 
 ```
 npx disable-eslint-issues-cli src/**/*.js
