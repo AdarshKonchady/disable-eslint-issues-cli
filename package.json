@@ -1,6 +1,6 @@
 {
   "name": "disable-eslint-issues-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Auto add ESLint disables in your code",
   "main": "index.js",
   "bin": {
@@ -11,8 +11,8 @@
   },
   "keywords": [
     "eslint",
-    "eslint-warnings",
-    "eslint-errors"
+    "eslint warnings",
+    "eslint errors"
   ],
   "author": "Adarsh Konchady",
   "license": "ISC",
