@@ -4,7 +4,7 @@
   "description": "Auto add ESLint disables in your code",
   "main": "index.js",
   "bin": {
-    "disable-eslint-warnings-cli": "bin/index.js"
+    "disable-eslint-issues-cli": "bin/index.js"
   },
   "engines": {
     "node": ">=6.4.0"
