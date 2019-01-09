@@ -6,11 +6,11 @@ This package can be used to disable all existing errors and warnings in your pro
 - Usage:
 
 ```
-disable-eslint-issues-cli <directory_path>
+npx disable-eslint-issues-cli <directory_path>
 ```
 
 Example:
 
 ```
-disable-eslint-issues-cli src/**/*.js
+npx disable-eslint-issues-cli src/**/*.js
 ```
