@@ -37,39 +37,44 @@ const writeModifiedRules = ruleIdsArr => {
   appendFile("./modifiedRuleIds.txt", ruleSetText, log);
 };
 
+/**
+ * @param {array} results - Array of files with ESLint report for each file
+ */
 const disableESLintIssues = results => {
   const ruleIds = new Set();
   const readFilePromises = results.map(result => {
     const { messages, filePath } = result;
-    const lineMeta = [];
+    const lineMeta = {};
 
-    // Parse failing rules
+    // Parse failing rules for each file
     messages.forEach(message => {
       const { line, ruleId } = message;
 
-      // TODO: Handle multiple failing rules per line
-      lineMeta.push({
-        ruleId,
-        lineNumber: line
-      });
+      // Create a map of failing rules per line
+      if (lineMeta[line]) {
+        lineMeta[line].push(ruleId);
+      } else {
+        lineMeta[line] = [ruleId];
+      }
     });
 
     return new Promise(resolve => {
       readFile(filePath, (err, data) => {
         log(err);
-
         const fileContentsArr = data.toString().split("\n");
         let linePadding = 0;
         // `lineMeta` has the line numbers to disable eslint rules.
-        lineMeta.forEach(({ ruleId, lineNumber }) => {
-          // TODO: Handle JSX comments
+        Object.entries(lineMeta).forEach(ruleMeta => {
+          const [lineNumber, ruleIdsPerLine] = ruleMeta;
           fileContentsArr.splice(
             lineNumber - 1 + linePadding,
             0,
-            `// eslint-disable-next-line ${ruleId}`
+            `// eslint-disable-next-line ${ruleIdsPerLine.join(", ")}`
           );
           linePadding++; // increment linePadding since every insertion increases lineNumber by 1
-          ruleIds.add(ruleId);
+          ruleIdsPerLine.forEach(ruleId => {
+            ruleIds.add(ruleId);
+          });
         });
         const text = fileContentsArr.join("\n");
         writeFile(filePath, text, log);

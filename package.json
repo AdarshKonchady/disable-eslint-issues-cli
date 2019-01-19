@@ -6,6 +6,9 @@
   "bin": {
     "disable-eslint-issues-cli": "bin/index.js"
   },
+  "scripts": {
+    "format": "npx prettier --write bin/index.js"
+  },
   "engines": {
     "node": ">=6.4.0"
   },
