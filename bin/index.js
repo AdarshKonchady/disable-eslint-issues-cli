@@ -1,10 +1,9 @@
 #! /usr/bin/env node
-var shell = require("shelljs");
 
 const { CLIEngine } = require("eslint");
 const { appendFile, readFile, writeFile } = require("fs");
 
-shell.exec("echo Processing your files ...");
+console.log("Processing your files...");
 
 const log = err => {
   if (err) {
@@ -20,7 +19,8 @@ const getEslintWarningAndErrorReport = () => {
     //   useEslintrc: false,
   });
 
-  shell.exec("echo Getting a report for bad rules...");
+  console.log("Getting a report for bad rules...");
+
   const report = cli.executeOnFiles(args);
 
   return report;
@@ -87,13 +87,18 @@ const disableESLintIssues = results => {
 
 const transformEslintWarnings = () => {
   const { results: resultsArr } = getEslintWarningAndErrorReport();
-  shell.exec("echo Disabling ESLint issues...");
+
+  console.log("Disabling ESLint issues...");
+
   const promises = disableESLintIssues(resultsArr);
-  shell.exec("echo Writing modified rules to file...");
+
+  console.log("Writing modified rules to file...");
+
   Promise.all(promises).then(ruleIdsArr => {
     writeModifiedRules(ruleIdsArr);
   });
-  shell.exec("echo Done");
+
+  console.log("Done");
 };
 
 transformEslintWarnings();
