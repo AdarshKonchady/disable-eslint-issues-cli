@@ -20,7 +20,6 @@
   "author": "Adarsh Konchady",
   "license": "MIT",
   "dependencies": {
-    "eslint": "^5.12.0",
-    "shelljs": "^0.8.3"
+    "eslint": "^5.12.0"
   }
 }
