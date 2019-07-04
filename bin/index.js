@@ -2,6 +2,12 @@
 
 const { CLIEngine } = require("eslint");
 const { appendFile, readFile, writeFile } = require("fs");
+const yargs = require('yargs');
+
+const { argv } = yargs
+  .option('fixable', {
+    alias: 'f',
+  });
 
 console.log("Processing your files...");
 
@@ -12,7 +18,7 @@ const log = err => {
 };
 
 const getEslintWarningAndErrorReport = () => {
-  const args = process.argv.slice(2);
+  const args = argv._;
   const cli = new CLIEngine({
     // configFile: eslintConfigPath,
     envs: ["browser", "mocha"]
@@ -41,6 +47,8 @@ const writeModifiedRules = ruleIdsArr => {
  * @param {array} results - Array of files with ESLint report for each file
  */
 const disableESLintIssues = results => {
+  const includeFixable = argv.fixable;
+
   const ruleIds = new Set();
   const readFilePromises = results.map(result => {
     const { messages, filePath } = result;
@@ -48,7 +56,9 @@ const disableESLintIssues = results => {
 
     // Parse failing rules for each file
     messages.forEach(message => {
-      const { line, ruleId } = message;
+      const { line, ruleId, fix } = message;
+
+      if (fix && !includeFixable) return;
 
       // Create a map of failing rules per line
       if (lineMeta[line]) {
