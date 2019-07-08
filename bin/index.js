@@ -5,6 +5,7 @@ const { appendFile, readFile, writeFile } = require("fs");
 
 console.log("Processing your files...");
 
+console.log('adarsh');
 const log = err => {
   if (err) {
     throw err;
