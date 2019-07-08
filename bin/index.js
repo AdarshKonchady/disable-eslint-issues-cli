@@ -11,6 +11,45 @@ const log = err => {
   }
 };
 
+const addDisableCommentsToFileContents = (lineMeta, data) => {
+  const ruleIds = new Set();
+  const fileContentsArr = data.toString().split("\n");
+  let linePadding = 0;
+  // `lineMeta` has the line numbers to disable eslint rules.
+  Object.entries(lineMeta).forEach(ruleMeta => {
+    const [lineNumber, ruleIdsPerLine] = ruleMeta;
+    const prevLine = fileContentsArr[lineNumber - 2];
+    const prevMatch = prevLine && prevLine.match(/\s*\/\/\s*eslint-disable-next-line\s+(.*)\s*/);
+    const lineIndex = lineNumber - 1 + linePadding;
+
+    if (prevMatch) {
+      fileContentsArr.splice(
+        lineIndex - 1,
+        1,
+        `// eslint-disable-next-line ${prevMatch[1]}, ${ruleIdsPerLine.join(", ")}`
+      );
+    } else {
+      fileContentsArr.splice(
+        lineIndex,
+        0,
+        `// eslint-disable-next-line ${ruleIdsPerLine.join(", ")}`
+      );
+      linePadding++; // increment linePadding since every insertion increases lineNumber by 1
+    }
+
+    ruleIdsPerLine.forEach(ruleId => {
+      ruleIds.add(ruleId);
+    });
+  });
+
+  const text = fileContentsArr.join("\n");
+
+  return {
+    ruleIds,
+    text
+  };
+};
+
 const getEslintWarningAndErrorReport = () => {
   const args = process.argv.slice(2);
   const cli = new CLIEngine({
@@ -41,7 +80,6 @@ const writeModifiedRules = ruleIdsArr => {
  * @param {array} results - Array of files with ESLint report for each file
  */
 const disableESLintIssues = results => {
-  const ruleIds = new Set();
   const readFilePromises = results.map(result => {
     const { messages, filePath } = result;
     const lineMeta = {};
@@ -60,24 +98,15 @@ const disableESLintIssues = results => {
 
     return new Promise(resolve => {
       readFile(filePath, (err, data) => {
-        log(err);
-        const fileContentsArr = data.toString().split("\n");
-        let linePadding = 0;
-        // `lineMeta` has the line numbers to disable eslint rules.
-        Object.entries(lineMeta).forEach(ruleMeta => {
-          const [lineNumber, ruleIdsPerLine] = ruleMeta;
-          fileContentsArr.splice(
-            lineNumber - 1 + linePadding,
-            0,
-            `// eslint-disable-next-line ${ruleIdsPerLine.join(", ")}`
-          );
-          linePadding++; // increment linePadding since every insertion increases lineNumber by 1
-          ruleIdsPerLine.forEach(ruleId => {
-            ruleIds.add(ruleId);
-          });
-        });
-        const text = fileContentsArr.join("\n");
+        if (err) {
+          log(err);
+          return;
+        }
+
+        const { text, ruleIds } = addDisableCommentsToFileContents(lineMeta, data);
+
         writeFile(filePath, text, log);
+
         resolve(ruleIds);
       });
     });
@@ -102,3 +131,5 @@ const transformEslintWarnings = () => {
 };
 
 transformEslintWarnings();
+
+exports.addDisableCommentsToFileContents = addDisableCommentsToFileContents;
