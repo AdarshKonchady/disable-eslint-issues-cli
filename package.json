@@ -7,6 +7,7 @@
     "disable-eslint-issues-cli": "bin/index.js"
   },
   "scripts": {
+    "test": "jest",
     "format": "npx prettier --write bin/index.js"
   },
   "engines": {
