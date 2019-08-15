@@ -5,7 +5,7 @@ const { appendFile, readFile, writeFile } = require("fs");
 const yargs = require('yargs');
 
 const { argv } = yargs
-  .option('fixable', {
+  .option('include-fixable', {
     alias: 'f',
   });
 
@@ -47,7 +47,7 @@ const writeModifiedRules = ruleIdsArr => {
  * @param {array} results - Array of files with ESLint report for each file
  */
 const disableESLintIssues = results => {
-  const includeFixable = argv.fixable;
+  const { includeFixable } = argv;
 
   const ruleIds = new Set();
   const readFilePromises = results.map(result => {
