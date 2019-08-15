@@ -5,8 +5,12 @@ const { appendFile, readFile, writeFile } = require("fs");
 const yargs = require('yargs');
 
 const { argv } = yargs
+  .usage('$0 [options] <paths>')
+  .scriptName('disable-eslint-issues-cli')
   .option('include-fixable', {
     alias: 'f',
+    describe: 'Also disable auto-fixable ESLint rules.',
+    type: 'boolean'
   });
 
 console.log("Processing your files...");
