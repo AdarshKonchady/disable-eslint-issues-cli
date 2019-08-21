@@ -2,6 +2,16 @@
 
 const { CLIEngine } = require("eslint");
 const { appendFile, readFile, writeFile } = require("fs");
+const yargs = require('yargs');
+
+const { argv } = yargs
+  .usage('$0 [options] <paths>')
+  .scriptName('disable-eslint-issues-cli')
+  .option('include-fixable', {
+    alias: 'f',
+    describe: 'Also disable auto-fixable ESLint rules.',
+    type: 'boolean'
+  });
 
 console.log("Processing your files...");
 
@@ -51,7 +61,7 @@ const addDisableCommentsToFileContents = (lineMeta, data) => {
 };
 
 const getEslintWarningAndErrorReport = () => {
-  const args = process.argv.slice(2);
+  const args = argv._;
   const cli = new CLIEngine({
     // configFile: eslintConfigPath,
     envs: ["browser", "mocha"]
@@ -80,13 +90,17 @@ const writeModifiedRules = ruleIdsArr => {
  * @param {array} results - Array of files with ESLint report for each file
  */
 const disableESLintIssues = results => {
+  const { includeFixable } = argv;
+
   const readFilePromises = results.map(result => {
     const { messages, filePath } = result;
     const lineMeta = {};
 
     // Parse failing rules for each file
     messages.forEach(message => {
-      const { line, ruleId } = message;
+      const { line, ruleId, fix } = message;
+
+      if (fix && !includeFixable) return;
 
       // Create a map of failing rules per line
       if (lineMeta[line]) {
