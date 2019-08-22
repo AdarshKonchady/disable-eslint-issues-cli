@@ -29,14 +29,18 @@ const addDisableCommentsToFileContents = (lineMeta, data) => {
   Object.entries(lineMeta).forEach(ruleMeta => {
     const [lineNumber, ruleIdsPerLine] = ruleMeta;
     const prevLine = fileContentsArr[lineNumber - 2];
-    const prevMatch = prevLine && prevLine.match(/\s*\/\/\s*eslint-disable-next-line\s+(.*)\s*/);
+    const prevMatch =
+      prevLine &&
+      prevLine.match(/\s*\/\/\s*eslint-disable-next-line\s+(.*)\s*/);
     const lineIndex = lineNumber - 1 + linePadding;
 
     if (prevMatch) {
       fileContentsArr.splice(
         lineIndex - 1,
         1,
-        `// eslint-disable-next-line ${prevMatch[1]}, ${ruleIdsPerLine.join(", ")}`
+        `// eslint-disable-next-line ${prevMatch[1]}, ${ruleIdsPerLine.join(
+          ", "
+        )}`
       );
     } else {
       fileContentsArr.splice(
@@ -117,7 +121,10 @@ const disableESLintIssues = results => {
           return;
         }
 
-        const { text, ruleIds } = addDisableCommentsToFileContents(lineMeta, data);
+        const { text, ruleIds } = addDisableCommentsToFileContents(
+          lineMeta,
+          data
+        );
 
         writeFile(filePath, text, log);
 
