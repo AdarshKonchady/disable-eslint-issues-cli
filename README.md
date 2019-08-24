@@ -1,4 +1,4 @@
-# disable-eslint-issues-cli
+# disable-eslint-issues-cli [![Build Status](https://travis-ci.org/akonchady/disable-eslint-issues-cli.svg?branch=master)](https://travis-ci.org/akonchady/disable-eslint-issues-cli)
 
 This package can be used to disable all existing errors and warnings in your project by adding a comment to disable them.
 
