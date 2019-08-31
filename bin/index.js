@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const { CLIEngine } = require("eslint");
-const { appendFile, readFile, writeFile } = require("fs");
+const { readFile, writeFile } = require("fs");
 const yargs = require('yargs');
 
 const { argv } = yargs
@@ -87,7 +87,7 @@ const writeModifiedRules = ruleIdsArr => {
     });
   });
   const ruleSetText = Array.from(uniqueRuleIds).join("\n");
-  appendFile("./modifiedRuleIds.txt", ruleSetText, log);
+  writeFile("./modifiedRuleIds.txt", ruleSetText, log);
 };
 
 /**
