@@ -23,5 +23,5 @@ Options:
 ### Example:
 
 ```console
-$ npx disable-eslint-issues-cli src/**/*.js test/**/*.js
+$ npx disable-eslint-issues-cli 'src/**/*.js' 'test/**/*.js'
 ```
